@@ -1,4 +1,6 @@
 import cv2
+from fer import FER
+
 ##############################
 frameWidth = 640
 frameHeight = 480
@@ -11,16 +13,22 @@ cap.set(3, frameWidth)
 cap.set(4, frameHeight)
 cap.set(10, 150)
 
+
+def emotion(img):
+    detector = FER()
+    dominant_emotion, emotion_score = detector.top_emotion(img)
+    return dominant_emotion
+
+
 while True:
     success, img = cap.read()
     imgGray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     faces = faceCascade.detectMultiScale(imgGray, 1.1, 4)
-
     for (x, y, w, h) in faces:
         area = w*h
         if area > minArea:
             cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2)
-            cv2.putText(img, "emotion", (x,y-5),cv2.FONT_HERSHEY_COMPLEX_SMALL,1, color, 2)
+            cv2.putText(img, emotion(img[y:y+h, x:x+w]), (x,y-5),cv2.FONT_HERSHEY_COMPLEX_SMALL,1, color, 2)
             imgRoi = img[y:y+h, x:x+w]
             cv2.imshow("ROI", imgRoi)
 
