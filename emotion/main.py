@@ -1,6 +1,5 @@
 import cv2
-from fer import FER
-
+from find_emotion import emotion
 ##############################
 frameWidth = 640
 frameHeight = 480
@@ -12,13 +11,6 @@ cap = cv2.VideoCapture(0)
 cap.set(3, frameWidth)
 cap.set(4, frameHeight)
 cap.set(10, 150)
-
-
-def emotion(img):
-    detector = FER()
-    dominant_emotion, emotion_score = detector.top_emotion(img)
-    return dominant_emotion
-
 
 while True:
     success, img = cap.read()
