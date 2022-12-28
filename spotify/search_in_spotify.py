@@ -1,7 +1,7 @@
 import tekore as tk
 from spotify.auto import get_user_token
 from spotify.player import get_first_available_device
-
+from connect_emotion_to_spotify import emotion_to_song
 NUM_ITEMS = 11
 
 # Get the user's token to be able to make requests on their account
@@ -13,6 +13,9 @@ available_device = get_first_available_device(spotify)
 
 # get the search string from the user
 search_string = input("Enter something: ")
+
+# get the search string from connect_emotion_to_spotify file
+#search_string = emotion_to_song()
 
 # get the tracks found from this search
 tracks, = spotify.search(query=search_string, types=('playlist',), limit=1)
