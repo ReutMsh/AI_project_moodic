@@ -1,7 +1,7 @@
-import find_emotion
+from connect_emotion_to_spotify import emotion_to_song
 
-print(find_emotion.scanning_emotion())
-
+#print(find_emotion.scanning_emotion())
+print(emotion_to_song())
 '''import cv2
 import find_emotion
 ##############################

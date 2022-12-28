@@ -1,48 +1,53 @@
 from fer import FER
 import cv2
-import Enum
+from Enum import emotionEnum
 
-MAX_FACES = 10
 
 ##############################
+MAX_FACES = 5
+
 FRAME_WIDTH = 640
 FRAME_HEIGHT = 480
-faceCascade = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
-minArea = 500  # TODO change to uppercase
-color = (255,0,255)
+MIN_AREA = 500  # TODO change to uppercase
+COLOR = (255, 0, 255)
+##############################
 
-def general():
-    emotions = scanning_emotion()
+
+'''scanning and return the dominant emotion'''
+def scanning_emotion():
+    emotions = scanning_face()
     biggest_index = -1
     biggest = -1
     for i in range(len(emotions)):
         if emotions[i] > biggest:
             biggest_index = i
             biggest = emotions[i]
-    return biggest_index # TODO convert to emotion enum
+
+    return emotionEnum(biggest_index).name
 
 
 '''gets the image and returns a counter for the emotions the camera scanned'''
-def scanning_emotion():
+def scanning_face():
     cap = cv2.VideoCapture(0)
     cap.set(3, FRAME_WIDTH)
     cap.set(4, FRAME_HEIGHT)
     cap.set(10, 150)
+    face_cascade = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
 
     count_dominant = [0, 0, 0, 0, 0, 0, 0]
     count_faces = 0
     while count_faces < MAX_FACES:
         success, img = cap.read()
         imgGray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        faces = faceCascade.detectMultiScale(imgGray, 2, 4)
+        faces = face_cascade.detectMultiScale(imgGray, 2, 4)
         for (x, y, w, h) in faces:  #TODO limit to the biggest face
             count_faces += 1
             area = w * h
-            if area > minArea:
+            if area > MIN_AREA:
                 emt = emotion(img[y:y + h, x:x + w])
                 if emt is None:
                     continue
-                mt = Enum.emotionEnum[emt].value
+                mt = emotionEnum[emt].value
                 count_dominant[mt] += 1
     return count_dominant
 
