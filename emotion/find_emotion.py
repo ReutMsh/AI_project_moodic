@@ -32,7 +32,7 @@ def scanning_face():
     cap.set(3, FRAME_WIDTH)
     cap.set(4, FRAME_HEIGHT)
     cap.set(10, 150)
-    face_cascade = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
+    face_cascade = cv2.CascadeClassifier("..\haarcascade_frontalface_default.xml")
 
     count_dominant = [0, 0, 0, 0, 0, 0, 0]
     count_faces = 0
