@@ -19,8 +19,8 @@ available_device = get_first_available_device(spotify)
 
 # get the search string from connect_emotion_to_spotify file
 
-search_string = emotion_to_song()
-print(f"your search is {search_string}\n")
+search_string, your_emotion = emotion_to_song()
+print(f"you are {your_emotion} and now you will listen to {search_string}\n")
 
 # get the tracks found from this search
 tracks, = spotify.search(query=search_string, types=('playlist',), limit=NUM_ITEMS)
