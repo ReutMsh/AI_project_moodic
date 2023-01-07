@@ -96,7 +96,6 @@ class HomeApp(App):
     # endregion
 
     # region scan to emotion
-
     def print_scanning(self, instance):
         self.switch_view_button.opacity = 1
         self.switch_view_button.size_hint =(0.45, 0.25)
@@ -120,40 +119,27 @@ class HomeApp(App):
         # change view
         self.background.source = "try_again.jpeg"
 
-        # update button settings
+        # update switch_view button settings
         self.switch_view_button.disabled = True
         self.switch_view_button.opacity = 0
 
         # update try again button
-        self.try_again_button.disabled= False
-        self.try_again_button.size_hint= (0.49, 0.0775)
-
-        '''self.switch_view_button.bind(on_press=self.try_again_to_find_emotion, on_release = self.clean)
-        self.switch_view_button.pos_hint = {"center_x": .51, "center_y": .196}
-        self.switch_view_button.size_hint = (0.49, 0.0775)
-        self.switch_view_button.opacity = 0
-        self.switch_view_button.text = ""'''
+        self.try_again_button.disabled = False
+        self.try_again_button.size_hint = (0.49, 0.0775)
 
         # update the spotify button
         self.transferring_button.disabled = False
-        self.transferring_button.opacity = 0.5 #TODO: change to 0
+        self.transferring_button.opacity = 0.5  # TODO: change to 0
 
         return self
 
     # endregion
 
     # region try again
-
     def try_again_to_find_emotion(self, instance):
         # change background
         self.background.source = "scan.jpeg"
 
-
-        '''self.switch_view_button.bind(on_press=self.print_scanning, on_release=self.switch_scan_win_to_emotion_win)
-        self.switch_view_button.pos_hint = {"center_x": .5, "center_y": .47}
-        self.switch_view_button.size_hint = (0.5, 0.3)
-        self.switch_view_button.opacity = 1
-        self.switch_view_button.background_color = "red"'''
         # update switch_view_button
         self.switch_view_button.opacity = 0
         self.switch_view_button.size_hint = (0.5, 0.3)
@@ -162,6 +148,7 @@ class HomeApp(App):
         # update try again button
         self.try_again_button.disabled = True
 
+        # update transferring button
         self.transferring_button.opacity = 0  # TODO: delete
         self.transferring_button.disabled = True
 
@@ -182,9 +169,9 @@ class HomeApp(App):
         # update view
         self.background.source = "transferring_to_spotify.jpeg"
 
-        # update switch_view_button
-        self.switch_view_button.disabled = True
-        self.switch_view_button.opacity = 0
+        # update try_again button
+        self.try_again_button.disabled = True
+        self.try_again_button.opacity = 0
 
         # update spotify button
         self.transferring_button.disabled = True
@@ -195,11 +182,8 @@ class HomeApp(App):
     def start_spotify(self, instance):
         """play spotify and close the application"""
         search_in_spotify(self.emotion)
-        #sleep(3)
         self.stop()
-
-
-    #endregion
+    # endregion
 
 
 app = HomeApp()
