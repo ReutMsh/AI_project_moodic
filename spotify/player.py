@@ -5,7 +5,7 @@ def get_first_available_device(spotify):
     if len(available_devices) == 0:
         print('No devices are available for this user.\nExiting...')
         exit()
-    #אולי כדאי לעשות שיעבור על כל המכשירים ולהפעיל בראשון שפתוח.
+
     for device in available_devices:
         if device.is_active:
             return device

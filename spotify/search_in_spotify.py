@@ -6,7 +6,7 @@ from connect_emotion_to_spotify import emotion_to_song
 NUM_ITEMS = 1
 
 
-def search_in_spotify():
+def search_in_spotify(emotion):
 
     # Get the user's token to be able to make requests on their account
     token = get_user_token()
@@ -20,7 +20,7 @@ def search_in_spotify():
 
     # get the search string from connect_emotion_to_spotify file
 
-    search_string, your_emotion = emotion_to_song()
+    search_string, your_emotion = emotion_to_song(emotion)
     print(f"you are {your_emotion} and now you will listen to {search_string}\n")
 
     # get the tracks found from this search

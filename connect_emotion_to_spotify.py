@@ -2,8 +2,7 @@ from emotion.find_emotion import scanning_emotion
 
 
 '''return string to search and the emotion'''
-def emotion_to_song():
-    emotion = scanning_emotion()
+def emotion_to_song(emotion):
     match emotion:
         case 'angry':
             return "שירים מרגיעים", 'angry'
