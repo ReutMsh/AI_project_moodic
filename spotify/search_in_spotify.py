@@ -24,7 +24,8 @@ def search_in_spotify(emotion):
 
     # play the songs!
     print(
-        f'About to play {len(tracks.items)} tracks for "{search_string}" on {available_device.name} ({available_device.type})')
+        f'About to play {len(tracks.items)} tracks for "{search_string}"'
+        f' on {available_device.name} ({available_device.type})')
     for index, track in enumerate(tracks.items):
         print(index + 1, track.name)
 

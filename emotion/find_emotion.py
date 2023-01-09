@@ -14,6 +14,7 @@ MIN_AREA = 500
 ##############################
 # endregion
 
+
 # region scanning_emotion
 def scanning_emotion():
     """
@@ -33,9 +34,8 @@ def scanning_emotion():
             index_biggest_emotion = i
             counter_biggest_emotion = expressed_emotions[i]
     return emotionEnum(index_biggest_emotion).name
-
-
 # endregion
+
 
 # region scanning_face
 def scanning_face():
@@ -64,7 +64,7 @@ def scanning_face():
         faces_from_frame = face_cascade.detectMultiScale(imgGray, 2, 4)
 
         # classifying each face and adding the emotion to the counter
-        for (x, y, w, h) in faces_from_frame:  # TODO limit to the biggest face?
+        for (x, y, w, h) in faces_from_frame:
             area = w * h
             if area > MIN_AREA:  # the face is big enough for emotion detection
                 emt = emotion(img[y:y + h, x:x + w])

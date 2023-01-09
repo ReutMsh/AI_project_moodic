@@ -34,24 +34,13 @@ class HomeApp(App):
         main_layout.add_widget(self.emotion_label)
         # endregion
 
-        # region set a button for switching view and stages in the application
-        # primary settings
-        self.switch_view_button = Button(
-            pos_hint={"center_x": .49, "center_y": .209},
-            size_hint=(0.5, 0.081),
-            background_color="black",
-            background_normal='',
-            opacity=0
-        )
-        self.switch_view_button.bind(on_press=self.switch_open_win_to_scan_win)
-        main_layout.add_widget(self.switch_view_button)
-        # endregion
+
 
         # region button try again
         # primary settings
         self.try_again_button = Button(
-            pos_hint={"center_x": .51, "center_y": .196},
-            size_hint=(0, 0),
+            pos_hint={"center_x": .712, "center_y": .203},
+            size_hint=(0.32, 0.067),
             background_color="black",
             background_normal='',
             opacity=0,
@@ -64,15 +53,28 @@ class HomeApp(App):
         # region button transferring to spotify
         # primary settings
         self.transferring_button = Button(
-            pos_hint={"center_x": .51, "center_y": .05},
-            size_hint=(0.49, 0.0775),
-            background_color="yellow",
+            pos_hint={"center_x": .27, "center_y": .205},
+            size_hint=(0.32, 0.07),
+            background_color="black",
             background_normal='',
             opacity=0,
             disabled=True
         )
         self.transferring_button.bind(on_press=self.transferring_view_to_spotify, on_release=self.start_spotify)
         main_layout.add_widget(self.transferring_button)
+        # endregion
+
+        # region set a button for switching view and stages in the application
+        # primary settings
+        self.switch_view_button = Button(
+            pos_hint={"center_x": .49, "center_y": .209},
+            size_hint=(0.5, 0.081),
+            background_color="black",
+            background_normal='',
+            opacity=0
+        )
+        self.switch_view_button.bind(on_press=self.switch_open_win_to_scan_win)
+        main_layout.add_widget(self.switch_view_button)
         # endregion
 
         # region emotion image
@@ -125,11 +127,9 @@ class HomeApp(App):
 
         # update try again button
         self.try_again_button.disabled = False
-        self.try_again_button.size_hint = (0.49, 0.0775)
 
         # update the spotify button
         self.transferring_button.disabled = False
-        self.transferring_button.opacity = 0.5  # TODO: change to 0
 
         return self
 
