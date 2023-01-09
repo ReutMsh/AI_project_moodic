@@ -4,7 +4,6 @@ from kivy.uix.button import Button
 from kivy.uix.image import Image
 from kivy.uix.label import Label
 from kivy.core.window import Window
-from time import sleep
 from emotion.find_emotion import scanning_emotion
 from spotify.search_in_spotify import search_in_spotify
 
