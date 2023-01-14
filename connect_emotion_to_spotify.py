@@ -5,16 +5,12 @@ from emotion.find_emotion import scanning_emotion
 def emotion_to_song(emotion):
     match emotion:
         case 'angry':
-            return "שירים מרגיעים"
-        case 'disgust':
-            return "שירים כשאתה נגעל"
+            return "37i9dQZF1EIg1pTZ3BUIEF"
         case 'fear':
-            return "שירים כשאתה מפחד"
+            return "37i9dQZF1DXbmiyBesoBFy"
         case 'happy':
-            return "שירים שמחים"
-        case 'neutral':
-            return "שירים טבעיים"
+            return "37i9dQZF1DWYbUY40ZDAwb"
         case 'sad':
-            return "שירים משמחים"
+            return "37i9dQZF1DWUC4OPrlkH0Z"
         case 'surprise':
-            return "שירים מפתיעים"
+            return "37i9dQZF1DXdPec7aLTmlC"

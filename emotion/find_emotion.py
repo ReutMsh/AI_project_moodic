@@ -68,7 +68,7 @@ def scanning_face():
             area = w * h
             if area > MIN_AREA:  # the face is big enough for emotion detection
                 emt = emotion(img[y:y + h, x:x + w])
-                if emt is None:  # no emotion was recognized
+                if emt is None or emt is "disgust":  # no emotion was recognized
                     continue
 
                 # increase the emotion counter and the face counter
