@@ -3,7 +3,7 @@ import cv2
 from Enum import emotionEnum
 from UserException import OpenCameraException
 
-# region const
+# region const variables
 ##############################
 # constant parameters
 MAX_FACES = 5
@@ -13,7 +13,6 @@ FRAME_HEIGHT = 480
 MIN_AREA = 500
 ##############################
 # endregion
-
 
 # region scanning_emotion
 def scanning_emotion():
@@ -35,7 +34,6 @@ def scanning_emotion():
             counter_biggest_emotion = expressed_emotions[i]
     return emotionEnum(index_biggest_emotion).name
 # endregion
-
 
 # region scanning_face
 def scanning_face():
@@ -68,15 +66,13 @@ def scanning_face():
             area = w * h
             if area > MIN_AREA:  # the face is big enough for emotion detection
                 emt = emotion(img[y:y + h, x:x + w])
-                if emt is None or emt is "disgust":  # no emotion was recognized
+                if emt is None or emt == "disgust":  # no emotion was recognized
                     continue
 
                 # increase the emotion counter and the face counter
                 count_dominant_emotion[emotionEnum[emt].value] += 1
                 count_faces += 1
     return count_dominant_emotion
-
-
 # endregion
 
 # region emotion
