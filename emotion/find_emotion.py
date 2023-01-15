@@ -47,7 +47,7 @@ def scanning_face():
     """
     # accessing the camera feed and loading the emotion detection model
     cap = cv2.VideoCapture(0)
-    face_cascade = cv2.CascadeClassifier("..\haarcascade_frontalface_default.xml")
+    face_cascade = cv2.CascadeClassifier("emotion\haarcascade_frontalface_default.xml")
 
     count_dominant_emotion = [0, 0, 0, 0, 0, 0, 0]
     count_faces = 0
