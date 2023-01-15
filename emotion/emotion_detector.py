@@ -11,18 +11,20 @@ MAX_FACES = 5
 FRAME_WIDTH = 640
 FRAME_HEIGHT = 480
 MIN_AREA = 500
+
+
 ##############################
 # endregion
 
-# region scanning_emotion
-def scanning_emotion():
+# region get_expressed_emotion
+def get_expressed_emotion():
     """
     Scanning and retrieving the users emotions and returning the dominant emotion the user expressed
 
     ~ Returns:
                A string containing the name of the chosen emotion.
     """
-    expressed_emotions = scanning_face()
+    expressed_emotions = get_dominant_emotions_from_camera()  # get a list that counts the expressed emotions
 
     index_biggest_emotion = -1
     counter_biggest_emotion = -1
@@ -32,11 +34,12 @@ def scanning_emotion():
         if expressed_emotions[i] > counter_biggest_emotion:
             index_biggest_emotion = i
             counter_biggest_emotion = expressed_emotions[i]
-    return emotionEnum(index_biggest_emotion).name
+
+    return emotionEnum(index_biggest_emotion).name  # the name of the most expressed emotion
 # endregion
 
-# region scanning_face
-def scanning_face():
+# region get_dominant_emotions_from_camera
+def get_dominant_emotions_from_camera():
     """
     Accessing the camera feed of the device and extracting the emotions expressed in the feed.
 
@@ -49,7 +52,7 @@ def scanning_face():
     cap = cv2.VideoCapture(0)
     face_cascade = cv2.CascadeClassifier("emotion\haarcascade_frontalface_default.xml")
 
-    count_dominant_emotion = [0, 0, 0, 0, 0, 0, 0]
+    count_dominant_emotion = [0, 0, 0, 0, 0, 0]
     count_faces = 0
 
     # capturing images from the camera feed, cropping the faces and classifying their emotion
@@ -65,18 +68,22 @@ def scanning_face():
         for (x, y, w, h) in faces_from_frame:
             area = w * h
             if area > MIN_AREA:  # the face is big enough for emotion detection
-                emt = emotion(img[y:y + h, x:x + w])
-                if emt is None or emt == "disgust":  # no emotion was recognized
+                emt = extract_emotion_from_image(img[y:y + h, x:x + w])
+
+                if emt is None or emt == "disgust":  # no relevant emotion was recognized
                     continue
 
                 # increase the emotion counter and the face counter
                 count_dominant_emotion[emotionEnum[emt].value] += 1
                 count_faces += 1
+
     return count_dominant_emotion
+
+
 # endregion
 
-# region emotion
-def emotion(img):
+# region extract_emotion_from_image
+def extract_emotion_from_image(img):
     """
     Finding an emotion that appears  in an image. Using a classification model provided by FER library
     ~ img: Object that will be scanned by the model to extract an emotion.
