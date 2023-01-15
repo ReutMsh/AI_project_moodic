@@ -25,9 +25,9 @@ def emotion_to_playlist(emotion):
             return "37i9dQZF1DXdPec7aLTmlC"
 
 
-def search_in_spotify(emotion):
+def search_in_spotify(emotion, user_name):
     # Get the user's token to be able to make requests on their account
-    token = get_user_token()
+    token = get_user_token(user_name)
     spotify = tk.Spotify(token)
 
     #  Find the first available device

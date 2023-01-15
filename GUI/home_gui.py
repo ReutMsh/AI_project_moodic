@@ -1,10 +1,12 @@
 from kivy.app import App
+from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.button import Button
 from kivy.uix.image import Image
 from kivy.uix.label import Label
 from kivy.core.window import Window
 from kivy.uix.popup import Popup
+from kivy.uix.textinput import TextInput
 
 from UserException import OpenCameraException, noAvailableDevice, noSpotifyPremium, noActiveDevice
 from emotion.find_emotion import scanning_emotion
@@ -27,6 +29,13 @@ class HomeApp(App):
         # region image for background
         self.background = Image(source= GUI_PATH + "welcome.jpeg")
         main_layout.add_widget(self.background)
+        # endregion
+
+        # region text settings for the emotion label
+        self.emotion_label = Label(text="",
+                                   pos_hint={"center_x": .5, "center_y": .51},
+                                   font_size=40, font_name=GUI_PATH + "Academy Engraved LET Plain")
+        main_layout.add_widget(self.emotion_label)
         # endregion
 
         # region button try again
@@ -66,7 +75,7 @@ class HomeApp(App):
             background_normal='',
             opacity=0
         )
-        self.switch_view_button.bind(on_press=self.switch_open_win_to_scan_win)
+        self.switch_view_button.bind(on_press=self.sign_in)
         main_layout.add_widget(self.switch_view_button)
         # endregion
 
@@ -78,6 +87,25 @@ class HomeApp(App):
         return main_layout
     # endregion
 
+    # region sign_in
+    def sign_in(self, instance):
+        textScr = "please enter your moodic name:\n"
+        box = BoxLayout()
+        self.input_text = TextInput(multiline=False, width=200, height=28, pos=(10, 450))
+        box.add_widget(self.input_text, index=1)
+
+        self.myButton = Button(text="OK, start!")
+        box.add_widget(self.myButton, index=0)
+        popupExc = Popup(title="Sign In\n\n" + textScr + "\n\n\n", size_hint=(0.9, 0.35), size=(250, 250),
+                         separator_height=0.05, separator_color="white", auto_dismiss=False)
+        popupExc.content = box
+        popupExc.open()
+        self.myButton.bind(on_press=self.switch_open_win_to_scan_win, on_release=popupExc.dismiss)
+
+        return self
+    # endregion
+
+
     # region switch_openwin_to_scanwin
     def switch_open_win_to_scan_win(self, instance):
         # change view
@@ -86,6 +114,7 @@ class HomeApp(App):
         self.switch_view_button.bind(on_press =self.print_scanning, on_release=self.switch_scan_win_to_emotion_win)
         self.switch_view_button.pos_hint = {"center_x": .5, "center_y": .47}
         self.switch_view_button.size_hint = (0.5, 0.3)
+
 
         return self
     # endregion
@@ -192,7 +221,7 @@ class HomeApp(App):
     def start_spotify(self, instance):
         """play spotify and close the application"""
         try:
-            search_in_spotify(self.emotion)
+            search_in_spotify(self.emotion, self.input_text.text)
         except noAvailableDevice as ex:
             print(ex)
             myException = str(ex)
