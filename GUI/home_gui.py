@@ -88,8 +88,8 @@ class HomeApp(App):
     # endregion
 
     # region sign_in
-    def sign_in(self, instance):
-        textScr = "please enter your moodic name:\n"
+    def sign_in(self, instance, string = ""):
+        textScr = string + "\nPlease enter your moodic name:\n"
         box = BoxLayout()
         self.input_text = TextInput(multiline=False, width=200, height=28, pos=(10, 450))
         box.add_widget(self.input_text, index=1)
@@ -100,7 +100,40 @@ class HomeApp(App):
                          separator_height=0.05, separator_color="white", auto_dismiss=False)
         popupExc.content = box
         popupExc.open()
-        self.myButton.bind(on_press=self.switch_open_win_to_scan_win, on_release=popupExc.dismiss)
+        self.myButton.bind(on_press=popupExc.dismiss, on_release=self.check_sign_in)
+
+        return self
+    def check_sign_in(self, instance):
+        if self.input_text.text in ['Tamar', 'Reut']:
+            self.switch_open_win_to_scan_win(instance)
+            return self
+
+        else:
+            self.sign_in(instance, f"Invalid user name, {self.input_text.text} doesn't exist")
+            return self
+
+    def try_again_check_sign_in(self, instance):
+        if self.input_text.text in ['Tamar', 'Reut']:
+            self.start_spotify(instance)
+            return self
+
+        else:
+            self.try_again_sign_in(instance, f"Invalid user name, {self.input_text.text} doesn't exist")
+            return self
+
+    def try_again_sign_in(self, instance, string=""):
+        textScr = string + "\nPlease enter your moodic name:\n"
+        box = BoxLayout()
+        self.input_text = TextInput(multiline=False, width=200, height=28, pos=(10, 450))
+        box.add_widget(self.input_text, index=1)
+
+        self.myButton = Button(text="OK, start!")
+        box.add_widget(self.myButton, index=0)
+        popupExc = Popup(title="Sign In\n\n" + textScr + "\n", size_hint=(0.9, 0.35), size=(250, 250),
+                         separator_height=0.05, separator_color="white", auto_dismiss=False)
+        popupExc.content = box
+        popupExc.open()
+        self.myButton.bind(on_press=self.try_again_check_sign_in, on_release=popupExc.dismiss)
 
         return self
     # endregion
@@ -234,12 +267,28 @@ class HomeApp(App):
 
         except noSpotifyPremium as ex:
             myException = str(ex)
+            box = BoxLayout()
+
+            popupExc = Popup(title="Error\n\n" + myException + "\n\n\n", size_hint=(None, None), size=(250, 250),
+                             separator_height=0.05, separator_color="white", auto_dismiss=False)
+            close_but = Button(text="okay,\n close moodic", on_press=popupExc.dismiss, font_size=14,
+                               on_release=self.stop)
+            sign_with_premium_account = Button(text="sign with\npremium account", font_size=14,
+                                               on_press=popupExc.dismiss,
+                                               on_release=self.try_again_sign_in)
+            box.add_widget(close_but, index=0)
+            box.add_widget(sign_with_premium_account, index=1)
+            popupExc.content = box
+            popupExc.open()
+            return self
+
+            '''myException = str(ex)
             popupExc = Popup(title="Error\n\n" + myException + "\n\n\n", size_hint=(None, None), size=(250, 250),
                              separator_height=0.05, separator_color="white", auto_dismiss=False)
             popupExc.content = Button(text="okay, close moodic", on_press=popupExc.dismiss,
                                       on_release=self.stop)
             popupExc.open()
-            return self
+            return self'''
 
 
         except noActiveDevice as ex:
