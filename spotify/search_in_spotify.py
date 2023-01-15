@@ -1,4 +1,6 @@
 import tekore as tk
+
+from UserException import noSpotifyPremium
 from spotify.auto import get_user_token
 from spotify.player import get_first_available_device
 
@@ -31,13 +33,16 @@ def search_in_spotify(emotion):
     #  Find the first available device
     available_device = get_first_available_device(spotify)
 
-    # get the search-string from emotion_to_song function
-    if emotion == "neutral":
-        favorite = spotify.current_user_top_tracks()
-        spotify.playback_start_tracks(
-            [t.id for t in favorite.items], device_id=available_device.id)
+    try:
+        # get the search-string from emotion_to_song function
+        if emotion == "neutral":
+            favorite = spotify.current_user_top_tracks()
+            spotify.playback_start_tracks(
+                [t.id for t in favorite.items], device_id=available_device.id)
 
-    else:
-        playlist_id = emotion_to_playlist(emotion)
-        playlist_tracks = spotify.playlist(playlist_id, as_tracks=True)
-        spotify.playback_start_context(playlist_tracks['uri'], device_id=available_device.id)
+        else:
+            playlist_id = emotion_to_playlist(emotion)
+            playlist_tracks = spotify.playlist(playlist_id, as_tracks=True)
+            spotify.playback_start_context(playlist_tracks['uri'], device_id=available_device.id)
+    except:
+        raise noSpotifyPremium

@@ -4,6 +4,9 @@ from kivy.uix.button import Button
 from kivy.uix.image import Image
 from kivy.uix.label import Label
 from kivy.core.window import Window
+from kivy.uix.popup import Popup
+
+from UserException import OpenCameraException, noAvailableDevice, noSpotifyPremium, noActiveDevice
 from emotion.find_emotion import scanning_emotion
 from spotify.search_in_spotify import search_in_spotify
 
@@ -106,8 +109,22 @@ class HomeApp(App):
 
     def switch_scan_win_to_emotion_win(self, instance):
         # scan emotion using the user's camera
-        self.emotion = scanning_emotion()
+        try:
+            self.emotion = scanning_emotion()
 
+        except OpenCameraException as ex:
+            print(ex)
+            myException = str(ex)
+            popupExc = Popup(title="Error\n\n" + myException + "\n\n\n", size_hint=(None, None), size=(250, 250),
+                             separator_height=0.05, separator_color="white", auto_dismiss=False)  # , title_align=)
+            popupExc.content = Button(text="okay, I pix it", on_press=popupExc.dismiss,
+                                      on_release=self.try_again_to_find_emotion)
+            popupExc.open()
+
+            return self
+        self.continue_switch_scan_win_to_emotion_win(instance)
+
+    def continue_switch_scan_win_to_emotion_win(self, instance):
         # print the emotion result of the scan
         self.emotion_label.text = self.emotion
 
@@ -180,7 +197,47 @@ class HomeApp(App):
 
     def start_spotify(self, instance):
         """play spotify and close the application"""
-        search_in_spotify(self.emotion)
+        try:
+            search_in_spotify(self.emotion)
+        except noAvailableDevice as ex:
+            print(ex)
+            myException = str(ex)
+            popupExc = Popup(title="Error\n\n" + myException + "\n\n\n", size_hint=(None, None), size=(250, 250),
+                             separator_height=0.05, separator_color="white", auto_dismiss=False)
+            popupExc.content = Button(text="okay, I pix it", on_press=popupExc.dismiss,
+                                      on_release=self.continue_switch_scan_win_to_emotion_win)
+            popupExc.open()
+            return self
+
+        except noSpotifyPremium as ex:
+            myException = str(ex)
+            popupExc = Popup(title="Error\n\n" + myException + "\n\n\n", size_hint=(None, None), size=(250, 250),
+                             separator_height=0.05, separator_color="white", auto_dismiss=False)
+            popupExc.content = Button(text="okay, close moodic", on_press=popupExc.dismiss,
+                                      on_release=self.stop)
+            popupExc.open()
+            return self
+
+
+        except noActiveDevice as ex:
+            myException = str(ex)
+            popupExc = Popup(title="Error\n\n" + myException + "\n\n\n", size_hint=(None, None), size=(250, 250),
+                             separator_height=0.05, separator_color="white", auto_dismiss=False)
+            popupExc.content = Button(text="okay, I fix it", on_press=popupExc.dismiss,
+                                      on_release=self.continue_switch_scan_win_to_emotion_win)
+            popupExc.open()
+            return self
+
+
+        except:
+            myException = "Sorry, for unknown reason something went wrong\nPlease try again\n\n"
+            popupExc = Popup(title="Error\n\n" + myException + "\n\n\n", size_hint=(None, None), size=(250, 250),
+                             separator_height=0.05, separator_color="white", auto_dismiss=False)
+            popupExc.content = Button(text="okay, I fix it", on_press=popupExc.dismiss,
+                                      on_release=self.continue_switch_scan_win_to_emotion_win)
+            popupExc.open()
+            return self
+
         self.stop()
     # endregion
 
