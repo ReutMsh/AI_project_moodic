@@ -54,6 +54,6 @@ def activate_emotion_based_playlist_in_spotify(emotion, user_name):
             playlist_tracks = spotify.playlist(playlist_id, as_tracks=True)
             spotify.playback_start_context(playlist_tracks['uri'], device_id=available_device.id)
 
-    except:     # exception will accrue if  the user doesn't own a Premium account
+    except tk.Forbidden:     # exception will accrue if  the user doesn't own a Premium account
         raise NoSpotifyPremium
 # endregion

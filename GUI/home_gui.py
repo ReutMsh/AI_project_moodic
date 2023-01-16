@@ -1,3 +1,5 @@
+import sys
+
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
@@ -364,7 +366,7 @@ class HomeApp(App):
 
 
         except:
-            myException = "Sorry, for unknown reason something went wrong\nPlease try again\n\n"
+            myException = f"Sorry, for unknown reason something went wrong\nPlease try again\n\nthe cause might be:\n{sys.exc_info()[1]}."
             popupExc = Popup(title="Error\n\n" + myException + "\n\n\n", size_hint=(None, None), size=(250, 250),
                              separator_height=0.05, separator_color="white", auto_dismiss=False)
             popupExc.content = Button(text="okay, I fixed it", on_press=popupExc.dismiss,
