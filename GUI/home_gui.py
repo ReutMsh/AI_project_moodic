@@ -180,7 +180,7 @@ class HomeApp(App):
         """
         Checks if the username has an existing configuration file
         """
-        if self.username_input_text.text in ['Tamar', 'Reut']:
+        if self.username_input_text.text in ['Tamar', 'Reut', 'Ayelet', 'TamarCohen']:
             self.start_spotify(instance)
         else:
             self.try_again_non_premium_sign_in_popup(instance, f"Invalid user name,"
