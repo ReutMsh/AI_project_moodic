@@ -4,7 +4,6 @@ from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.button import Button
-from kivy.uix.gridlayout import GridLayout
 from kivy.uix.image import Image
 from kivy.uix.label import Label
 from kivy.core.window import Window
@@ -65,7 +64,7 @@ class HomeApp(App):
                                           background_normal='',
                                           opacity=0,
                                           disabled=True)
-        self.transferring_button.bind(on_press=self.transferring_view_to_spotify,
+        self.transferring_button.bind(on_press=self.transferring_to_spotify_layout,
                                       on_release=self.start_spotify)
         main_layout.add_widget(self.transferring_button)
         # endregion
@@ -150,7 +149,8 @@ class HomeApp(App):
         log_in_request = message + SIGN_IN_NAME
 
         # region popup layout
-        popup_layout = BoxLayout(size_hint=(1, 1), orientation="vertical")
+        popup_layout = BoxLayout(size_hint=(1, 1),
+                                 orientation="vertical")
 
         self.exception_label = Label(text=log_in_request)
         popup_layout.add_widget(self.exception_label)
@@ -203,7 +203,7 @@ class HomeApp(App):
         self.background.source = BACKGROUND_PATH + "scan.jpeg"
         # button update settings
         self.switch_view_button.bind(on_press=self.print_scanning,
-                                     on_release=self.switch_scan_layout_to_emotion_layout)
+                                     on_release=self.scan_layout_scan_emotion)
         self.switch_view_button.pos_hint = {"center_x": .5,
                                             "center_y": .47}
         self.switch_view_button.size_hint = (0.5, 0.3)
@@ -227,24 +227,32 @@ class HomeApp(App):
 
     # region result emotion + result view
     # region switch_scan_layout_to_emotion_layout
-    def switch_scan_layout_to_emotion_layout(self, instance):
+    def scan_layout_scan_emotion(self, instance):
         # scan emotion using the user's camera
         try:
             self.emotion = get_expressed_emotion()
 
         except OpenCameraException as ex:
-            # TODO: change this settings
-            popupExc = Popup(title="Error\n\n" + str(ex),
-                             size_hint=(0.9, 0.5),
-                             separator_color="BEFF00",
-                             auto_dismiss=False)
-            popupExc.content = Button(text="okay, I fixed it",
-                                      on_press=popupExc.dismiss,
-                                      on_release=self.try_again_to_find_emotion)
-            popupExc.open()
+            camera_error_popup = Popup(title=" ERROR",
+                                       size_hint=(0.9, 0.5),
+                                       separator_color="BEFF00",
+                                       auto_dismiss=False)
 
+            box = BoxLayout(size_hint=(1, 1),
+                            orientation="vertical")
+
+            box.add_widget(Label(text=str(ex)))
+            box.add_widget(Button(text="okay, I fixed it",
+                                  size_hint_y=.3,
+                                  on_press=camera_error_popup.dismiss,
+                                  on_release=self.try_again_to_find_emotion))
+
+            camera_error_popup.content = box
+            camera_error_popup.open()
             return self
+
         self.continue_switch_scan_layout_to_emotion_layout(instance)
+        return self
 
     # endregion
 
@@ -277,9 +285,7 @@ class HomeApp(App):
     # endregion
     # endregion
 
-    # TODO: continue editing the files from here - rename + clean code
-
-    # region try again
+    # region try again to scan for emotion
     def try_again_to_find_emotion(self, instance):
         # change background
         self.background.source = BACKGROUND_PATH + "scan.jpeg"
@@ -293,7 +299,6 @@ class HomeApp(App):
         self.try_again_button.disabled = True
 
         # update transferring button
-        self.transferring_button.opacity = 0  # TODO: delete
         self.transferring_button.disabled = True
 
         # delete emojy
@@ -306,7 +311,7 @@ class HomeApp(App):
     # endregion
 
     # region transferring to spotify
-    def transferring_view_to_spotify(self, instance):
+    def transferring_to_spotify_layout(self, instance):
         # clear previous view
         self.emotion_result_label.text = ""
         self.emotion_result_image.source = EMOJY_PATH + "clear.png"
@@ -324,97 +329,117 @@ class HomeApp(App):
 
         return self
 
+    # endregion
+
+    # region move to spotify
     def start_spotify(self, instance):
-        """play spotify and close the application"""
+        """Play spotify and close the application"""
         try:
             activate_emotion_based_playlist_in_spotify(self.emotion, self.username_input_text.text)
         except NoAvailableDevice as ex:
-            print(ex)
-            myException = str(ex)
-            popupExc = Popup(title="Error\n\n" + myException + "\n\n\n", size_hint=(None, None), size=(250, 250),
-                             separator_height=0.05, separator_color="white", auto_dismiss=False)
-            popupExc.content = Button(text="okay, I fixed it", on_press=popupExc.dismiss,
-                                      on_release=self.continue_switch_scan_layout_to_emotion_layout)
-            popupExc.open()
+            general_exception_popup = Popup(title="ERROR",
+                                            size_hint=(0.9, 0.5),
+                                            separator_color="BEFF00",
+                                            auto_dismiss=False)
+
+            box = BoxLayout(size_hint=(1, 1),
+                            orientation="vertical")
+
+            box.add_widget(Label(text=str(ex)))
+            box.add_widget(Button(text="okay, I fixed it",
+                                  size_hint_y=.3,
+                                  on_press=general_exception_popup.dismiss,
+                                  on_release=self.continue_switch_scan_layout_to_emotion_layout))
+
+            general_exception_popup.content = box
+            general_exception_popup.open()
+
             return self
 
         except NoSpotifyPremium as ex:
-            myException = str(ex)
-            box = BoxLayout()
+            general_exception_popup = Popup(title="ERROR",
+                                            size_hint=(0.9, 0.5),
+                                            separator_color="BEFF00",
+                                            auto_dismiss=False)
 
-            popupExc = Popup(title="Error\n\n" + myException + "\n\n\n", size_hint=(None, None), size=(250, 250),
-                             separator_height=0.05, separator_color="white", auto_dismiss=False)
-            close_but = Button(text="okay,\n close moodic", on_press=popupExc.dismiss, font_size=14,
-                               on_release=self.stop)
-            sign_with_premium_account = Button(text="sign with\npremium account", font_size=14,
-                                               on_press=popupExc.dismiss,
-                                               on_release=self.try_again_non_premium_sign_in_popup)
-            box.add_widget(close_but, index=0)
-            box.add_widget(sign_with_premium_account, index=1)
-            popupExc.content = box
-            popupExc.open()
+            box = BoxLayout(size_hint=(1, 1),
+                            orientation="vertical")
+
+            button_layout = BoxLayout(size_hint=(1, 1),
+                                      orientation="horizontal")
+            button_layout.add_widget(Button(text="close app",
+                                            size_hint_y=.3,
+                                            size_hint_x=.3,
+                                            on_press=general_exception_popup.dismiss,
+                                            on_release=self.stop))
+
+            button_layout.add_widget(Button(text="try another account",
+                                            size_hint_y=.3,
+                                            size_hint_x=.5,
+                                            on_press=general_exception_popup.dismiss,
+                                            on_release=self.try_again_non_premium_sign_in_popup))
+
+            box.add_widget(Label(text=str(ex)))
+            box.add_widget(button_layout)
+
+            general_exception_popup.content = box
+            general_exception_popup.open()
+
             return self
 
         except NoActiveDevice as ex:
-            myException = str(ex)
-            popupExc = Popup(title="Error\n\n" + myException + "\n\n\n", size_hint=(None, None), size=(250, 250),
-                             separator_height=0.05, separator_color="white", auto_dismiss=False)
-            popupExc.content = Button(text="okay, I fixed it", on_press=popupExc.dismiss,
-                                      on_release=self.continue_switch_scan_layout_to_emotion_layout)
-            popupExc.open()
+            no_active_popup = Popup(title="ERROR",
+                                    size_hint=(0.9, 0.5),
+                                    separator_color="BEFF00",
+                                    auto_dismiss=False)
+
+            box = BoxLayout(size_hint=(1, 1),
+                            orientation="vertical")
+
+            box.add_widget(Label(text=str(ex)))
+            box.add_widget(Button(text="okay, I fixed it",
+                                  size_hint_y=.3,
+                                  on_press=no_active_popup.dismiss,
+                                  on_release=self.continue_switch_scan_layout_to_emotion_layout))
+
+            no_active_popup.content = box
+            no_active_popup.open()
+
             return self
 
-
         except:
-            myException = f"Sorry, for unknown reason something went wrong\nPlease try again\n\nthe cause might be:\n{sys.exc_info()[1]}."
-            popupExc = Popup(title="Error\n\n" + myException + "\n\n\n", size_hint=(None, None), size=(250, 250),
-                             separator_height=0.05, separator_color="white", auto_dismiss=False)
-            popupExc.content = Button(text="okay, I fixed it", on_press=popupExc.dismiss,
-                                      on_release=self.continue_switch_scan_layout_to_emotion_layout)
-            popupExc.open()
+            general_exception_popup = Popup(title="UNKNOWN ERROR",
+                                            size_hint=(0.9, 0.5),
+                                            separator_color="BEFF00",
+                                            auto_dismiss=False)
+
+            box = BoxLayout(size_hint=(1, 1),
+                            orientation="vertical")
+
+            button_layout = BoxLayout(size_hint=(1, 1),
+                                      orientation="horizontal")
+            button_layout.add_widget(Button(text="close app",
+                                            size_hint_y=.3,
+                                            size_hint_x=.3,
+                                            on_press=general_exception_popup.dismiss,
+                                            on_release=self.stop))
+
+            button_layout.add_widget(Button(text="try again",
+                                            size_hint_y=.3,
+                                            size_hint_x=.5,
+                                            on_press=general_exception_popup.dismiss,
+                                            on_release=self.continue_switch_scan_layout_to_emotion_layout))
+
+            box.add_widget(Label(text=f"Sorry, something went wrong\n"
+                                      f"Please try again\n\n"
+                                      f"The cause might be:\n"
+                                      f"~ {sys.exc_info()[1]}."))
+            box.add_widget(button_layout)
+
+            general_exception_popup.content = box
+            general_exception_popup.open()
+
             return self
 
         self.stop()
     # endregion
-
-
-'''
-app = HomeApp()
-app.run()
-
-
-
-   # region switch_scan_layout_to_emotion_layout
-    def switch_scan_layout_to_emotion_layout(self, instance):
-        """
-        Change the window layout from the scanning view to the emotion result view
-        """
-        try:
-            # scan emotion using the user's camera
-            self.emotion = get_expressed_emotion()
-
-        except OpenCameraException as ex:
-            # region popup layout
-            BoxLayout(size_hint=(1, 1), orientation="vertical")
-
-            self.exception_label = Label(text=str(ex), size_hint_x=.5)
-            popup_layout.add_widget(self.exception_label)
-
-            self.exception_button = Button(text="Try again",
-                                           size_hint_y=.3)
-            popup_layout.add_widget(self.exception_button)
-            # endregion
-
-            error_popup = Popup(title="Error",
-                             size_hint=(0.9, 0.5),
-                             separator_color="BEFF00",
-                             auto_dismiss=False,
-                             content=popup_layout)
-
-            self.exception_button.bind(on_press=error_popup.dismiss,
-                                       on_release=self.try_again_to_find_emotion)
-            error_popup.open()
-            return self
-
-        self.continue_switch_scan_win_to_emotion_win(instance)
-'''

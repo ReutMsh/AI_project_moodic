@@ -6,7 +6,7 @@ from UserException import OpenCameraException
 # region const variables
 ##############################
 # constant parameters
-MAX_FACES = 5
+MAX_FACES = 3
 
 FRAME_WIDTH = 640
 FRAME_HEIGHT = 480
