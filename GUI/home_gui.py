@@ -130,7 +130,7 @@ class HomeApp(App):
         """
         Checks if the username has an existing configuration file
         """
-        if self.username_input_text.text in ['Tamar', 'Reut', 'TamarCohen', 'Ayelet']:
+        if self.username_input_text.text in []:  # TODO: add your string username
             self.switch_open_Layout_to_scan_Layout(instance)  # move to the next stage
         else:  # try loging in again + a message
             self.sign_in_open_popup(instance, "Invalid user name,"
@@ -182,7 +182,7 @@ class HomeApp(App):
         """
         Checks if the username has an existing configuration file
         """
-        if self.username_input_text.text in ['Tamar', 'Reut', 'Ayelet', 'TamarCohen']:
+        if self.username_input_text.text in []:  # TODO: add your string username
             self.start_spotify(instance)
         else:
             self.try_again_non_premium_sign_in_popup(instance, f"Invalid user name,"
