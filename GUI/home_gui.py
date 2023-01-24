@@ -336,6 +336,8 @@ class HomeApp(App):
         """Play spotify and close the application"""
         try:
             activate_emotion_based_playlist_in_spotify(self.emotion, self.username_input_text.text)
+
+        # region NoAvailableDevice
         except NoAvailableDevice as ex:
             general_exception_popup = Popup(title="ERROR",
                                             size_hint=(0.9, 0.5),
@@ -355,7 +357,9 @@ class HomeApp(App):
             general_exception_popup.open()
 
             return self
+        # endregion
 
+        # region NoSpotifyPremium
         except NoSpotifyPremium as ex:
             general_exception_popup = Popup(title="ERROR",
                                             size_hint=(0.9, 0.5),
@@ -386,7 +390,9 @@ class HomeApp(App):
             general_exception_popup.open()
 
             return self
+        # endregion
 
+        # region NoActiveDevice
         except NoActiveDevice as ex:
             no_active_popup = Popup(title="ERROR",
                                     size_hint=(0.9, 0.5),
@@ -406,7 +412,9 @@ class HomeApp(App):
             no_active_popup.open()
 
             return self
+        # endregion
 
+        # region general exception
         except:
             general_exception_popup = Popup(title="UNKNOWN ERROR",
                                             size_hint=(0.9, 0.5),
@@ -440,6 +448,6 @@ class HomeApp(App):
             general_exception_popup.open()
 
             return self
-
+            # endregion
         self.stop()
     # endregion
